@@ -2,15 +2,15 @@ from openai import OpenAI
 from typing_extensions import override
 from openai import AssistantEventHandler
 from dotenv import load_dotenv
-import os
+
 
 load_dotenv()
 
 client = OpenAI()
   
 assistant = client.beta.assistants.create(
-  name="Financial Analyst Assistant",
-  instructions="You are an expert financial analyst. Use you knowledge base to answer questions about audited financial statements.",
+  name="Personal Helper",
+  instructions="You are an Assistant to a Dementia Patient. Help her remember things by answering her questions. Be compassionate",
   model="gpt-4-turbo",
   tools=[{"type": "file_search"}],
 )
@@ -67,7 +67,7 @@ class EventHandler(AssistantEventHandler):
 with client.beta.threads.runs.stream(
     thread_id=thread.id,
     assistant_id=assistant.id,
-    instructions="Address the user as My dear",
+    instructions="The person asking questions is Sheethal Joshi",
     event_handler=EventHandler(),
 ) as stream:
     stream.until_done()

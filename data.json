@@ -1,0 +1,80 @@
+[
+    {
+        "_id": "663755e474ea6ccfa7a1cb1d",
+        "email": "sh33thal24@gmail.com",
+        "first_name": "Sheethal",
+        "last_name": "Joshi Thomas",
+        "people_data": [
+            {
+                "name": "Gibi Joshi",
+                "relation": "Mother",
+                "occupation": "Nurse/HouseWife",
+                "description": "Is 54 years old, loves his family. loves dark colours. loves to travel to new places and buy new clothes"
+            },
+            {
+                "name": "Sharon Joshi",
+                "relation": "Sister",
+                "occupation": "QA Engineer",
+                "description": "Is 24 years old, likes watching docusoaps, is a clean freak. loves pastel shades"
+            },
+            {
+                "name": "Joshi Thomas",
+                "relation": "Father",
+                "occupation": "Business",
+                "description": "is hardworking and loves cars. likes dark pine green. is very extroverted."
+            }
+        ],
+        "mem_data": [
+            {
+                "date": "01-24-2006",
+                "description": "Had a fun new years party at cousins house. was a blast."
+            },
+            {
+                "date": "24-02-2023",
+                "description": "had my sem exams, was very hard."
+            },
+            {
+                "date": "02-12-2009",
+                "description": "I went to the park"
+            },
+            {
+                "date": "02-11-2019",
+                "description": "I got my board exam results"
+            },
+            {
+                "date": "02-11-2019",
+                "description": "I got my board exam results"
+            },
+            {
+                "date": "09-16-2018",
+                "description": "I had a nightmare about ghosts."
+            },
+            {
+                "date": "09-16-2018",
+                "description": "I had a nightmare about ghosts."
+            }
+        ],
+        "places_mem": [
+            {
+                "place_name": "My home",
+                "description": "located in koratty",
+                "image": "image_url_1"
+            },
+            {
+                "place_name": "My childhood home",
+                "description": "Located in Raleigh Nc",
+                "image": "image_url_2"
+            },
+            {
+                "place_name": "Nasi and Mee",
+                "description": "My favourite asian restaurant",
+                "image": "image_url_3"
+            },
+            {
+                "place_name": "CUSAT SOE",
+                "description": "This is where I study for college. Btech CSE is my course.",
+                "image": "img_url"
+            }
+        ]
+    }
+]
