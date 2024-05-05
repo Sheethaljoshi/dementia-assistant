@@ -37,18 +37,12 @@ thread = client.beta.threads.create(
 )
  
 
-print(thread.tool_resources.file_search)
-
 client = OpenAI()
  
 class EventHandler(AssistantEventHandler):
     @override
     def on_text_created(self, text) -> None:
         print(f"\nassistant > ", end="", flush=True)
-
-    @override
-    def on_tool_call_created(self, tool_call):
-        print(f"\nassistant > {tool_call.type}\n", flush=True)
 
     @override
     def on_message_done(self, message) -> None:
@@ -73,7 +67,7 @@ class EventHandler(AssistantEventHandler):
 with client.beta.threads.runs.stream(
     thread_id=thread.id,
     assistant_id=assistant.id,
-    instructions="Please address the user as Jane Doe. The user has a premium account.",
+    instructions="Address the user as My dear",
     event_handler=EventHandler(),
 ) as stream:
     stream.until_done()
