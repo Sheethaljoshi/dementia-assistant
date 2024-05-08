@@ -1,13 +1,14 @@
-import Link from 'next/link';
+
 import React from 'react';
 import Card from '../components/card';
+import { MdEmojiPeople } from "react-icons/md";
 
 const CardPage: React.FC = () => {
   return (
 
             <div className="flex-grow">
-                <div >
-                <h1 className="text-4xl m-7 font-extrabold">People</h1>
+                <div className='pl-6' >
+                <h1 className="text-4xl m-7 font-extrabold flex"><div className=''><MdEmojiPeople /></div>People</h1>
                 <div className='mb-8 ml-8 mr-8'>Welcome to &quot;Our Loved Ones,&quot; a special place where we celebrate the cherished people in your life. Here, we honor the beautiful connections you&apos;ve made throughout your journey, each person a shining star in your universe. Through heartfelt descriptions and cherished photographs, we reminisce about the wonderful moments shared with these beloved individuals.</div>
                 </div>
                 <div className="flex justify-center items-center">
