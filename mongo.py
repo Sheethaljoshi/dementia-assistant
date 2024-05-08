@@ -109,10 +109,13 @@ def delete_memory(email, first_name, last_name, mem_index):
         {"$unset": {"people_data." + str(person_index) + "." + field: ""}}
     )
 
-
+'''
 #insert_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", "Joshi Thomas", "Broski", "Broing", "is hardworking and loves cars. likes dark pine green. is very extroverted.")
-#insert_place_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","CUSAT SOE", "This is where I study for college. Btech CSE is my course.", "img_url")
+insert_mem_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","19-10-2022", "This is when I started B-tech")
+insert_mem_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","24-01-2004", "This is my Birthday. I was born in Bahrain")
+insert_mem_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","05-04-2024", "Professor Vinod Kumar Kicked me out of class because i passed an attendance sheet during the exam. Thats why i dont like that professor.")
 # Update person data
+'''
 '''
 update_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, {
     "description": "Updated description",
@@ -122,7 +125,7 @@ update_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, {
 '''
 
 # Delete a person
-delete_person("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 3)
+#delete_person("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 3)
 
 # Delete specific field from a person's data
 #delete_person_field("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, "description")
