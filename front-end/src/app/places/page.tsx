@@ -5,13 +5,15 @@ import { FaMapMarkedAlt } from "react-icons/fa";
 import { FaHandHoldingHeart } from "react-icons/fa";
 
 import Link from 'next/link';
+import Carousel from "../components/carousel";
+import PlaceContent from "./pagecontent";
 
 export default function Places() {
     return (
         <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex m-6">
-     
+        <PlaceContent/>
       <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">|||</label>
     
     </div> 

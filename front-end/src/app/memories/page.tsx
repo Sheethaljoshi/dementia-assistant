@@ -5,13 +5,15 @@ import { FaMapMarkedAlt } from "react-icons/fa";
 import { FaHandHoldingHeart } from "react-icons/fa";
 
 import Link from 'next/link';
+import MemoryContent from "./memoriescontent";
+
 
 export default function Memories() {
     return (
         <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex m-6">
-     
+         <MemoryContent/>  
       <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">|||</label>
     
     </div> 
