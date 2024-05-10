@@ -96,19 +96,6 @@ def delete_place(email, first_name, last_name, place_index):
         {"$pull": {"place_data": {"$eq": collection.find_one({"email": email, "first_name": first_name, "last_name": last_name})['place_data'][place_index]}}}
     )
 
-def delete_memory(email, first_name, last_name, mem_index):
-    collection.update_one(
-        {"email": email, "first_name": first_name, "last_name": last_name},
-        {"$pull": {"mem_data": {"$eq": collection.find_one({"email": email, "first_name": first_name, "last_name": last_name})['mem_data'][mem_index]}}}
-    )
-
-
-
-    collection.update_one(
-        {"email": email, "first_name": first_name, "last_name": last_name},
-        {"$unset": {"people_data." + str(person_index) + "." + field: ""}}
-    )
-
 '''
 #insert_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", "Joshi Thomas", "Broski", "Broing", "is hardworking and loves cars. likes dark pine green. is very extroverted.")
 insert_mem_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","19-10-2022", "This is when I started B-tech")

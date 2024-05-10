@@ -5,15 +5,14 @@ import { FaMapMarkedAlt } from "react-icons/fa";
 import { FaHandHoldingHeart } from "react-icons/fa";
 
 import Link from 'next/link';
+import HomeContent from "./home";
 
 export default function Home() {
     return (
         <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-          <div className="drawer-content flex m-6">
-     
-      <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">|||</label>
-    
+          <div className="drawer-content flex m-6 bg-base-200 rounded-3xl">
+          <HomeContent/>
     </div> 
     <div className="drawer-side rounded-t-3xl rounded-b-3xl sm:rounded-t-3xl sm:rounded-b-3xl shadow-2xl dark:shadow-2xl ">
       <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label> 
