@@ -13,13 +13,17 @@ const MemoryContent: React.FC = () => {
                 <div className='mb-8 ml-8 mr-8'>Life Archives invites you to journey through your digital collection, where each moment is a precious snapshot of your life&apos;s journey. Here, amidst the simplicity of design, your treasured memories await rediscovery and reflection.</div>
                 </div>
                 <div className='text-3xl font-extrabold pl-10 pt-3 pb-8 z-[1]'><SubNav
-                                                                                mainButtonText="Life Archives"
-                                                                                parentText="Filter"
-                                                                                submenu1Text="Sort by Date"
-                                                                                submenu2Text="Sort by Emotion"
-                                                                                item1Text="Add new"
-                                                                                item3Text="Add new"
-                                                                                />
+                                                                    mainButtonText="Life Archives"
+                                                                    parentText="Filter"
+                                                                    submenu1Text="Sort by Date"
+                                                                    submenu2Text="Sort by Emotion"
+                                                                    item1Text="Add new"
+                                                                    item3Text="Add new" onSubmenu2Click={function (): void {
+                                                                        throw new Error("Function not implemented.");
+                                                                    } } onSubmenu1Click={function (): void {
+                                                                        throw new Error("Function not implemented.");
+                                                                    } }                                            
+                                                                       />
             </div>
                 <div className="flex justify-center items-center">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-9 ">

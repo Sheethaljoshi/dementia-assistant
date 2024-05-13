@@ -1,6 +1,7 @@
 "use client"
 import React, { Fragment, useState } from 'react';
-import Modal from './modal1';
+import Modal from './modal';
+
 
 
 interface SubNavProps {
@@ -10,6 +11,8 @@ interface SubNavProps {
   submenu2Text: string;
   item1Text: string;
   item3Text: string;
+  onSubmenu2Click: () => void;
+  onSubmenu1Click: () => void;
 }
 
 const SubNav: React.FC<SubNavProps> = ({
@@ -19,8 +22,11 @@ const SubNav: React.FC<SubNavProps> = ({
   submenu2Text,
   item1Text,
   item3Text,
+  onSubmenu2Click,
+  onSubmenu1Click,
 }) => {
     const [showModal, setShowModal] = useState(false);
+    
   return (
     <Fragment>
     <div className="navbar bg-secondary rounded-3xl">
@@ -73,10 +79,10 @@ const SubNav: React.FC<SubNavProps> = ({
               <summary className='bg-base-200 px-7 py-4 btn'>{parentText}</summary>
               <ul className="p-2 bg-base-200">
                 <li>
-                  <a>{submenu1Text}</a>
+                  <a onClick={onSubmenu1Click}>{submenu1Text}</a>
                 </li>
                 <li>
-                  <a>{submenu2Text}</a>
+                  <a onClick={onSubmenu2Click}>{submenu2Text}</a>
                 </li>
               </ul>
             </details>

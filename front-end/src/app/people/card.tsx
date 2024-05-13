@@ -1,10 +1,80 @@
-
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import Card from '../components/card';
 import { MdEmojiPeople } from "react-icons/md";
 import SubNav from '../components/subnav';
 
+
+
+
 const CardPage: React.FC = () => {
+
+    const relatedPeopleInitial = [
+        {
+          name: "Alice",
+          relation_to_person: "Sister",
+          occupation: "Software Engineer",
+          description: "Loves hiking and reading mystery novels."
+        },
+        {
+            name: "David",
+            relation_to_person: "Cousin",
+            occupation: "Teacher",
+            description: "Teaches mathematics and enjoys photography."
+          },  
+        {
+          name: "Bob",
+          relation_to_person: "Friend",
+          occupation: "Graphic Designer",
+          description: "Enjoys painting and playing guitar in a band."
+        },
+        {
+          name: "Charlie",
+          relation_to_person: "Colleague",
+          occupation: "Data Analyst",
+          description: "Passionate about data visualization and analytics."
+        },
+        
+        {
+          name: "Frank",
+          relation_to_person: "Mentor",
+          occupation: "Entrepreneur",
+          description: "Started multiple successful businesses and enjoys mentoring."
+        },
+        {
+          name: "Grace",
+          relation_to_person: "Aunt",
+          occupation: "Chef",
+          description: "Owns a restaurant and specializes in Italian cuisine."
+        },
+        {
+            name: "Emma",
+            relation_to_person: "Neighbor",
+            occupation: "Nurse",
+            description: "Works at the local hospital and volunteers at a shelter."
+          },
+        {
+          name: "Hannah",
+          relation_to_person: "Roommate",
+          occupation: "Journalist",
+          description: "Writes for a national newspaper and loves traveling."
+        }
+      ];
+      
+
+      const [relatedPeople, setRelatedPeople] = useState(relatedPeopleInitial);
+
+        // Function to sort people based on alphabetical order of name
+        const sortPeopleAlphabetically = () => {
+            const sortedPeople = [...relatedPeople].sort((a, b) => a.name.localeCompare(b.name));
+            setRelatedPeople(sortedPeople);
+        };
+
+        const sortPeopleRecentlyAdded = () => {
+            const reversedPeople = [...relatedPeopleInitial].reverse(); // Reverse the initial array
+            setRelatedPeople(reversedPeople);
+          };
+
   return (
 
             <div className="flex-grow">
@@ -19,15 +89,15 @@ const CardPage: React.FC = () => {
                                                                                 submenu2Text="Alphabetical Order"
                                                                                 item1Text="Add new"
                                                                                 item3Text="Add new"
+                                                                                onSubmenu2Click={sortPeopleAlphabetically}
+                                                                                onSubmenu1Click ={sortPeopleRecentlyAdded}
                                                                                 />
             </div>
                 <div className="flex justify-center items-center">
                     <div className="grid  grid-cols-1 lg:grid-cols-2 gap-9 w-full max-w-screen-lg lg:mx-auto ml-11">
-                        <Card />
-                        <Card />
-                        <Card />
-                        <Card />
-                        <Card />
+                    {relatedPeople.map((person) => (
+                        <Card key={person.name} {...person} />
+                            ))}
                     </div>
                 </div>
             </div>

@@ -1,73 +1,67 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
 from openai import OpenAI
-from typing_extensions import override
-from openai import AssistantEventHandler
 from dotenv import load_dotenv
-
 
 load_dotenv()
 
-client = OpenAI()
-  
-assistant = client.beta.assistants.create(
-  name="Personal Helper",
-  instructions="You are an Assistant to a Dementia Patient. Help her remember things by answering her questions. Be compassionate",
-  model="gpt-4-turbo",
-  tools=[{"type": "file_search"}],
-)
+class QuestionRequest(BaseModel):
+    question: str
 
+class AnswerResponse(BaseModel):
+    answer: str
 
-assistant = client.beta.assistants.update(
-  assistant_id=assistant.id,
-  tool_resources={"file_search": {"vector_store_ids": ['vs_l7uuSAnirZgPKhfnSriaOoTu']}},
-)
+app = FastAPI()
 
-def get_user_question():
+@app.post("/get_answer/", response_model=AnswerResponse)
+async def get_answer(question_request: QuestionRequest):
+    question = question_request.question
+    final_answer = return_answer(question)
+    return {"answer": final_answer}
+
+def return_answer(question):
+    # Your OpenAI Assistant logic here
+    client = OpenAI()
+    assistant = client.beta.assistants.create(
+        name="Personal Helper",
+        instructions="The person asking questions is Sheethal Joshi",
+        model="gpt-4-turbo",
+        tools=[{"type": "file_search"}],
+    )
+
+    assistant = client.beta.assistants.update(
+        assistant_id=assistant.id,
+        tool_resources={"file_search": {"vector_store_ids": ['vs_l7uuSAnirZgPKhfnSriaOoTu']}},
+    )
+
+    thread = client.beta.threads.create(
+        messages=[
+            {
+                "role": "user",
+                "content": "Answer the following questions from the data files provided, keeping in mind that the user is Sheethal Joshi. She talks in first person. "
+            },
+            {
+                "role": "user",
+                "content": question,
+            }
+        ]
+    )
+
+    run = client.beta.threads.runs.create_and_poll(
+        thread_id=thread.id,
+        assistant_id=assistant.id,
+        instructions= question,
+    )
+
+    if run.status == 'completed':
+        messages = client.beta.threads.messages.list(
+            thread_id=thread.id,
+            run_id=run.id
+        )
+        answer = messages.data[0].content[0].text.value
+        return answer
  
-    question = input("Please enter your question: ")
-    return question
-
-
-thread = client.beta.threads.create(
-  messages=[
-    {
-      "role": "user",
-      "content": get_user_question(),
-    }
-  ]
-)
- 
-
-client = OpenAI()
- 
-class EventHandler(AssistantEventHandler):
-    @override
-    def on_text_created(self, text) -> None:
-        print(f"\nassistant > ", end="", flush=True)
-
-    @override
-    def on_message_done(self, message) -> None:
-        # print a citation to the file searched
-        message_content = message.content[0].text
-        annotations = message_content.annotations
-        citations = []
-        for index, annotation in enumerate(annotations):
-            message_content.value = message_content.value.replace(
-                annotation.text, f"[{index}]"
-            )
-            if file_citation := getattr(annotation, "file_citation", None):
-                cited_file = client.files.retrieve(file_citation.file_id)
-                citations.append(f"[{index}] {cited_file.filename}")
-
-        print(message_content.value)
-        print("\n".join(citations))
-
-
-
-
-with client.beta.threads.runs.stream(
-    thread_id=thread.id,
-    assistant_id=assistant.id,
-    instructions="The person asking questions is Sheethal Joshi",
-    event_handler=EventHandler(),
-) as stream:
-    stream.until_done()
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
