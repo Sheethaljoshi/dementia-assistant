@@ -16,6 +16,10 @@ cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mong
 db = cluster["dementia"]
 collection = db["fileids"]
 
+email = "sh33thal24@gmail.com"
+first_name = "Sheethal"
+last_name = "Joshi Thomas"
+
 def insert_person_data(email, first_name, last_name, name, relation, occupation, description):
     new_person = {
         "name": name,
@@ -96,6 +100,35 @@ def delete_place(email, first_name, last_name, place_index):
         {"$pull": {"place_data": {"$eq": collection.find_one({"email": email, "first_name": first_name, "last_name": last_name})['place_data'][place_index]}}}
     )
 
+def get_mem(email, first_name, last_name):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"mem_data": 1, "_id": 0}
+    )
+    if query_result:
+        return query_result.get("mem_data", [])
+    else:
+        return []
+
+def get_person(email, first_name, last_name):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"people_data": 1, "_id": 0}
+    )
+    if query_result:
+        return query_result.get("people_data", [])
+    else:
+        return []
+
+def get_place(email, first_name, last_name):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"places_mem": 1, "_id": 0}
+    )
+    if query_result:
+        return query_result.get("places_mem", [])
+    else:
+        return []
 '''
 #insert_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", "Joshi Thomas", "Broski", "Broing", "is hardworking and loves cars. likes dark pine green. is very extroverted.")
 insert_mem_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas","19-10-2022", "This is when I started B-tech")
@@ -110,6 +143,10 @@ update_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, {
     "occupation": "Engineer"
 })
 '''
+'''
+places_mem = get_place(email, first_name, last_name)
+print("Places memories for", first_name, last_name, ":", places_mem)
+'''
 
 # Delete a person
 #delete_person("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 3)
@@ -117,49 +154,56 @@ update_person_data("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, {
 # Delete specific field from a person's data
 #delete_person_field("sh33thal24@gmail.com", "Sheethal", "Joshi Thomas", 0, "description")
 
-def export_to_json():
-    data = list(collection.find())
+import json
+from io import BytesIO
+from openai import OpenAI
 
-    for item in data:
-        item['_id'] = str(item['_id'])
-    
-    json_bytes = json.dumps(data).encode('utf-8')
-    return BytesIO(json_bytes)
+def export_and_upload_to_vector_store():
+    # Function to export data to JSON
+    def export_to_json():
+        data = list(collection.find())
+        for item in data:
+            item['_id'] = str(item['_id'])
+        json_bytes = json.dumps(data).encode('utf-8')
+        return BytesIO(json_bytes)
 
-
-def create_file(file_contents):
-    client = OpenAI()
-    file3 = client.files.create(
-        file=(json_filename, file_contents, "application/json"),
-        purpose="assistants"
-    )
-    return file3
-
-
-def create_vector_store_file(file_id):
-    client = OpenAI()
-    vector_store_files = client.beta.vector_stores.files.list(vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu')
-    for vector_store_file in vector_store_files:
-        vector_store_file1 = client.beta.vector_stores.files.delete(
-            vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
-            file_id=vector_store_file.id
+    # Function to create file
+    def create_file(file_contents):
+        client = OpenAI()
+        file3 = client.files.create(
+            file=(json_filename, file_contents, "application/json"),
+            purpose="assistants"
         )
-        print(vector_store_file1)
-    vector_store_file = client.beta.vector_stores.files.create(
-        vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
-        file_id=file_id
-    )
+        return file3
+
+    # Function to create and upload vector store file
+    def create_and_upload_vector_store_file(file_id):
+        client = OpenAI()
+        vector_store_files = client.beta.vector_stores.files.list(vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu')
+        for vector_store_file in vector_store_files:
+            deleted = client.beta.vector_stores.files.delete(
+                vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
+                file_id=vector_store_file.id
+            )
+            print(deleted.id)
+        vector_store_file = client.beta.vector_stores.files.create(
+            vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
+            file_id=file_id
+        )
+        return vector_store_file
+
+    # Main function logic
+    json_filename = "data.json"
+    json_file_contents = export_to_json()
+    created_file = create_file(json_file_contents)
+    vector_store_file = create_and_upload_vector_store_file(created_file.id)
     return vector_store_file
 
-json_filename = "data.json"
-json_file_contents = export_to_json()
+# Example usage:
+# vector_store_file = export_and_upload_to_vector_store()
+# print("Vector store file created:", vector_store_file)
 
-created_file = create_file(json_file_contents)
-#print("File created:", created_file)
-
-
-vector_store_file = create_vector_store_file(created_file.id)
-print("Vector store file created:", vector_store_file)
+'''
 
 client = OpenAI()
 
@@ -169,5 +213,4 @@ vector_store_files = client.beta.vector_stores.files.list(
 print(vector_store_files)
 
 
-
-
+'''
