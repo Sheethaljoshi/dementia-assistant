@@ -25,7 +25,7 @@ export default function Home() {
         <li className='p-2'><Link href="/places" className='text-lg flex justify-center font-bold'><div><FaMapMarkedAlt /></div>Places</Link></li>
         <li className='p-2'><Link href="/memories" className='text-lg flex justify-center font-semibold'><div><FaHandHoldingHeart /></div>Memories</Link></li>
         </div>
-        <div className="flex mt-80 justify-end">
+        <div className="flex mt-72 justify-end">
         <label className="flex cursor-pointer gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
           <input type="checkbox" value="dark" className="toggle theme-controller"/>

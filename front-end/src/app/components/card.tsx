@@ -4,10 +4,12 @@ import Modal1 from './modal1';
 interface CardProps {
   name: string;
   description: string;
-  relation_to_person: string;
+  relation: string;
+  occupation: string;
+  person_index: number;
 }
 
-const Card: React.FC<CardProps> = ({ name, relation_to_person, description }) => {
+const Card: React.FC<CardProps> = ({ name, relation, description, occupation, person_index}) => {
   const limitedDescription = description.substring(0, 35) + (description.length > 30 ? '...' : '');
 
   const [showModal1, setShowModal1] = useState(false);
@@ -21,16 +23,15 @@ const Card: React.FC<CardProps> = ({ name, relation_to_person, description }) =>
       <div className="card-body">
         <div>
           <h2 className="card-title">{name}</h2>
-          <p className='text-xs mt-2 font-bold'>{relation_to_person}</p>
+          <p className='text-xs mt-2 font-bold'>{relation}</p>
         </div>
         <p className="text-sm md:text-base">{limitedDescription}</p>
         <div className="card-actions justify-end ">
           <button onClick={()=>setShowModal1(true)} className="btn btn-primary" >Know more</button>
         </div>
       </div>
-      <Modal1 isVisible={showModal1} onClose ={()=>setShowModal1(false)} name={name} description={description}/>
+      <Modal1 isVisible={showModal1} onClose={() => setShowModal1(false)} name={name} description={description} relation={relation} occupation={occupation} person_index={person_index}/>
     </div>
-    
     </Fragment>
   
   );
