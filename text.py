@@ -115,7 +115,7 @@ async def delete_person(email: str, first_name: str, last_name: str, person_inde
             return {"message": "Person data deleted successfully"}
     raise HTTPException(status_code=404, detail="Person not found")
 
-@app.delete("/delete/place")
+@app.post("/delete/place")
 async def delete_place(email: str, first_name: str, last_name: str, place_index: int):
     query_result = collection.find_one(
         {"email": email, "first_name": first_name, "last_name": last_name},
@@ -133,7 +133,7 @@ async def delete_place(email: str, first_name: str, last_name: str, place_index:
             return {"message": "Place data deleted successfully"}
     raise HTTPException(status_code=404, detail="Place not found")
 
-@app.delete("/delete/mem")
+@app.post("/delete/mem")
 async def delete_mem_data(email: str, first_name: str, last_name: str, mem_index: int):
     query_result = collection.find_one(
         {"email": email, "first_name": first_name, "last_name": last_name},
@@ -247,6 +247,27 @@ async def update_person(email: str, first_name: str, last_name: str, place_index
             export_and_upload_to_vector_store()
             return {"message": "Place data updated successfully"}
     raise HTTPException(status_code=404, detail="Place not found")
+
+@app.post("/update/mem")
+async def update_person(email: str, first_name: str, last_name: str, mem_index: int, date: str, description: str):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"mem_data": 1, "_id": 0}
+    )
+    if query_result:
+        places_mem= query_result.get("mem_data", [])
+        if mem_index < len(places_mem):
+            places_mem[mem_index] = {
+                "date": date,
+                "description": description
+            }
+            collection.update_one(
+                {"email": email, "first_name": first_name, "last_name": last_name},
+                {"$set": {"mem_data": places_mem}}
+            )
+            export_and_upload_to_vector_store()
+            return {"message": "Place data updated successfully"}
+    raise HTTPException(status_code=404, detail="Memory not found")
 
 @app.post("/get_answer/")
 async def get_answer(question: str):

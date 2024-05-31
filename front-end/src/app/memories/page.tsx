@@ -1,3 +1,4 @@
+"use client"
 import { FaRegCompass } from "react-icons/fa";
 import { FaHome } from "react-icons/fa";
 import { MdEmojiPeople } from "react-icons/md";
@@ -6,15 +7,18 @@ import { FaHandHoldingHeart } from "react-icons/fa";
 
 import Link from 'next/link';
 import MemoryContent from "./memoriescontent";
+import Modalchat from "../components/modalchat";
+import { useState } from "react";
 
 
 export default function Memories() {
+  const [showModalchat, setShowModalchat] = useState(false);
     return (
         <div className="drawer lg:drawer-open">
           <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content flex m-6">
          <MemoryContent/>  
-      <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">|||</label>
+         <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">|||</label>
     
     </div> 
     <div className="drawer-side rounded-t-3xl rounded-b-3xl sm:rounded-t-3xl sm:rounded-b-3xl shadow-2xl dark:shadow-2xl ">
@@ -28,16 +32,19 @@ export default function Memories() {
         <li className='p-2'><Link href="/places" className='text-lg flex justify-center font-bold'><div><FaMapMarkedAlt /></div>Places</Link></li>
         <li className='p-2'><Link href="/memories" className='text-lg flex justify-center font-semibold'><div><FaHandHoldingHeart /></div>Memories</Link></li>
         </div>
-        <div className="flex mt-72 justify-end">
-        <label className="flex cursor-pointer gap-2">
+        <div className="flex mt-64 justify-between">
+        <div className="ml-4"><button onClick={()=>setShowModalchat(true)} className="btn btn-primary" >Assistant</button></div>
+        <label className="flex cursor-pointer gap-2 mt-4">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M1 12h2M21 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/></svg>
           <input type="checkbox" value="dark" className="toggle theme-controller"/>
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </label>
+        
         </div>
         </div>
       </ul>
     </div>
+    <Modalchat isVisible={showModalchat} onClose ={()=>setShowModalchat(false)}/>
   </div>
     )
 }

@@ -31,7 +31,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
       url = `http://127.0.0.1:8000/insert/place?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&place_name=${placeName}&place_description=${placeDescription}`;
       axios.post(url)
     } else if(activeTab===3){
-      url = `http://127.0.0.1:8000/insert/date?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&date=${thedate}&mem_description=${memoryDescription}`;
+      url = `http://127.0.0.1:8000/insert/memory?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&date=${thedate}&mem_description=${memoryDescription}`;
       axios.post(url)
     }
     onClose()

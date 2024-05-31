@@ -1,29 +1,24 @@
+"use client"
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';
 
 interface ModalProps {
   isVisible: boolean;
   onClose: () => void;
-  name: string;
+  date: string;
   description: string;
-  relation: string;
-  occupation: string;
-  person_index: number;
+  mem_index: number;
 }
 
-const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, relation, occupation, person_index }) => {
+const Modal3: React.FC<ModalProps> = ({ isVisible, onClose, date, description, mem_index }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDescription, setNewDescription] = useState('');
-  const [newRelation, setNewRelation] = useState('');
-  const [newOccupation, setNewOccupation] = useState('');
 
   useEffect(() => {
-    setNewName(name);
+    setNewName(date);
     setNewDescription(description);
-    setNewRelation(relation);
-    setNewOccupation(occupation);
-  }, [name, description, relation, occupation]);
+  }, [date, description]);
 
   const handleUpdateButtonClick = () => {
     setIsEditing(true);
@@ -31,22 +26,20 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
 
   const handleCancelClick = () => {
     setIsEditing(false);
-    setNewName(name);
+    setNewName(date);
     setNewDescription(description);
-    setNewRelation(relation);
-    setNewOccupation(occupation);
     onClose()
   };
 
   const handleSubmit1 = () => {
-    const url = `http://127.0.0.1:8000/delete/person?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&person_index=${person_index}`;
+    const url = `http://127.0.0.1:8000/delete/mem?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&mem_index=${mem_index}`;
     axios.post(url);
     onClose();
     window.location.reload();
   };
 
   const handleSubmit2 = () => {
-    const url = `http://127.0.0.1:8000/update/person?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&person_index=${person_index}&name=${newName}&relation=${newRelation}&occupation=${newOccupation}&description=${newDescription}`;
+    const url = `http://127.0.0.1:8000/update/mem?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&mem_index=${mem_index}&date=${newName}&description=${newDescription}`;
     axios.post(url);
     onClose();
     window.location.reload();
@@ -72,8 +65,8 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
                     </>
                   ) : (
                     <>
-                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleUpdateButtonClick}>Update Person</button>
-                      <button className="btn w-64 bg-warning mr-6 mt-4" onClick={handleSubmit1}>Delete Person</button>
+                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleUpdateButtonClick}>Update Memory</button>
+                      <button className="btn w-64 bg-warning mr-6 mt-4" onClick={handleSubmit1}>Delete Memory</button>
                     </>
                   )}
                 </div>
@@ -82,29 +75,16 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
                 <div className='flex mb-4 justify-between'>
                   <div className='flex'>
                     {isEditing ? (
-                        <input type="text" className="input input-bordered font-extrabold text-3xl w-56" placeholder="Daisy" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                        <input type="text" className="input input-bordered font-extrabold  text-3xl " placeholder="Daisy" value={newName} onChange={(e) => setNewName(e.target.value)} />
                     ) : (
-                      <div className='font-extrabold text-3xl'>{name}</div>
+                      <div className='font-extrabold text-3xl'>{date}</div>
                     )}
-                    {isEditing ? (
-                      <div className="input-xs">
-                        <input type="text" className="input w-32 input-bordered ml-3" placeholder="Friend" value={newRelation} onChange={(e) => setNewRelation(e.target.value)} />
-                      </div>
-                    ) : 
-                    (<div className=' mt-2 ml-3 mr-12  text-xl'>{relation}</div>)}
                   </div>
-                  {isEditing ? (
-                      <div className="input-xs">
-                        <input type="text" className="input input-bordered" placeholder="Friend" value={newOccupation} onChange={(e) => setNewOccupation(e.target.value)} />
-                      </div>
-                    ) : 
-                    (<div className=' mt-4 text-sm'>{occupation}</div>)}
-                  
                 </div>
                 <div className='card bg-base-100 shadow-xl'>
                   <div className='card-body'>
                     {isEditing ? (
-                      <textarea className="textarea textarea-bordered card-body w-full h-40 resize-none" placeholder="What memory would you like to share?" value={newDescription} onChange={(e) => setNewDescription(e.target.value)}></textarea>
+                      <textarea className="textarea textarea-bordered card-body h-40 w-96" placeholder="What memory would you like to share?" value={newDescription} onChange={(e) => setNewDescription(e.target.value)}></textarea>
                     ) : (
                       <div className='mt-2 ml-3'>{description}</div>
                     )}
@@ -124,4 +104,4 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
   );
 };
 
-export default Modal1;
+export default Modal3;

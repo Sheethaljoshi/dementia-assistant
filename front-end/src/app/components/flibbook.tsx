@@ -1,16 +1,31 @@
-import React from 'react';
+"use client"
+import React, { Fragment, useState } from 'react';
+import Modal3 from './modal3';
 
-const Writings: React.FC = () => {
+interface CardProps{
+  date: string;
+  description: string;
+  mem_index: number;
+
+}
+
+const Writings: React.FC<CardProps> = ({ date, description, mem_index}) => {
+  const limitedDescription = description.substring(0, 45) + (description.length > 30 ? '...' : '');
+
+  const [showModal3, setShowModal3] = useState(false);
   return (
+    <Fragment>
     <div className="card w-80 lg:w-96  bg-primary text-primary-content ml-14 mr-20">
   <div className="card-body">
-    <h2 className="card-title">24/01/24</h2>
-    <p>I was born today yipeeeeeee!!!!!!!!The world welcomed me with open arms, and I took my first breath, a tiny whisper of life amidst the vastness of existence. In this moment of arrival, I am pure potential, a blank canvas awaiting the brushstrokes of experience to paint the tapestry of my life.</p>
+    <h2 className="card-title">{date}</h2>
+    <p>{limitedDescription}</p>
     <div className="card-actions justify-end">
-      <button className="btn">Read More</button>
+    <button onClick={()=>setShowModal3(true)} className="btn" >Read more</button>
     </div>
   </div>
+  <Modal3 isVisible={showModal3} onClose={() => setShowModal3(false)} date={date} description={description} mem_index={mem_index}/>
 </div>
+</Fragment>
   );
 };
 
