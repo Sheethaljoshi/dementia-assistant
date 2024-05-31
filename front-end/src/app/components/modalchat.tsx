@@ -48,7 +48,7 @@ if (!isVisible) return null;
                 </button>
                 </div>
           </div>
-          <div className="card w-full bg-base-100 shadow-xl h-80 ">
+          <div className="card w-full bg-base-100 h-80 ">
             <div className="card-body overflow-y-auto">
             {messages.map((mess) => (
                     mess.role === "assistant" ? 

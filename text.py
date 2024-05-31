@@ -1,12 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
-from pydantic import BaseModel
-from typing import Optional
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
+from pymongo.server_api import ServerApi
 
 load_dotenv()
 
@@ -20,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",  server_api=ServerApi('1') )
 db = cluster["dementia"]
 collection = db["fileids"]
 
@@ -202,6 +201,31 @@ async def insert_person(email: str, first_name: str, last_name: str, name: str, 
     )
     export_and_upload_to_vector_store()
     return {"message": "Person data inserted successfully"}
+
+@app.post("/update/person")
+async def update_person(email: str, first_name: str, last_name: str, person_index: int, name: str, relation: str, occupation: str, description: str):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"people_data": 1, "_id": 0}
+    )
+    
+    if query_result:
+        people_data = query_result.get("people_data", [])
+        if person_index < len(people_data):
+            people_data[person_index] = {
+                "name": name,
+                "relation": relation,
+                "occupation": occupation,
+                "description": description
+            }
+            collection.update_one(
+                {"email": email, "first_name": first_name, "last_name": last_name},
+                {"$set": {"people_data": people_data}}
+            )
+            export_and_upload_to_vector_store()
+            return {"message": "Person data updated successfully"}
+    raise HTTPException(status_code=404, detail="Person not found")
+
     
 
 @app.post("/get_answer/")
