@@ -1,5 +1,7 @@
+
+"use client"
 import { FaMapMarkedAlt } from "react-icons/fa";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Carousel from '../components/carousel';
 import ClickPick from '../components/clickpic';
 import SubNav from "../components/subnav";
@@ -8,7 +10,7 @@ import SubNav from "../components/subnav";
 
 const PlaceContent: React.FC = () => {
 
-  const [relatedPlace, setRelatedPlace] = useState([{name:"",relation:"",occupation:"",description:""}]);
+  const [relatedPlace, setRelatedPlace] = useState([{place_name:"",description:""}]);
   const [originalPlace, setOriginalPlace] = useState([]);
 
   useEffect(() => {
@@ -21,8 +23,8 @@ const PlaceContent: React.FC = () => {
               }
               const data = await response.json();
               console.log(data);
-              setRelatedPeople(data);
-              setOriginalPeople(data);
+              setRelatedPlace(data);
+              setOriginalPlace(data);
           } catch (error) {
               console.error('Error fetching data:', error);
           }
@@ -31,6 +33,15 @@ const PlaceContent: React.FC = () => {
       fetchData();
   }, []);
 
+    const sortPeopleAlphabetically = () => {
+        const sortedPeople = [...relatedPlace].sort((a, b) => a.place_name.localeCompare(b.place_name));
+        setRelatedPlace(sortedPeople);
+    };
+
+    const sortPeopleRecentlyAdded = () => {
+        const reversedPeople = [...originalPlace].reverse(); // Reverse the current array
+        setRelatedPlace(reversedPeople);
+    };
 
 
   return (
@@ -40,15 +51,23 @@ const PlaceContent: React.FC = () => {
     <div className='mb-8 ml-8 mr-8'>Memory Lane is a compassionate space designed with you in mind. As memory fades and familiar places become distant echoes, we offer a comforting virtual sanctuary where cherished memories can be revisited and celebrated.</div>
     <Carousel/>
     </div>
-    
+    <div className='text-3xl font-extrabold pl-10 pt-3 pb-8 z-[1]'>
+                <SubNav
+                    mainButtonText="Memory Lane"
+                    parentText="Filter"
+                    submenu1Text="Recently Added"
+                    submenu2Text="Alphabetical Order"
+                    item1Text="Add new"
+                    item3Text="Add new"
+                    onSubmenu2Click={sortPeopleAlphabetically}
+                    onSubmenu1Click={sortPeopleRecentlyAdded}
+                />
+            </div>
     <div className="flex justify-center items-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-9 w-full max-w-screen-lg mx-auto">
-        <ClickPick/>
-        <ClickPick/>
-        <ClickPick/>
-        <ClickPick/>
-        <ClickPick/>
-        <ClickPick/>
+        {relatedPlace.map((place, place_index) => (
+                        <ClickPick place_index={place_index} key={place_index} {...place} />
+                    ))}
         </div>
     </div>
 </div>

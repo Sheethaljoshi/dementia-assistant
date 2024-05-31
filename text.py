@@ -226,7 +226,27 @@ async def update_person(email: str, first_name: str, last_name: str, person_inde
             return {"message": "Person data updated successfully"}
     raise HTTPException(status_code=404, detail="Person not found")
 
-    
+
+@app.post("/update/place")
+async def update_person(email: str, first_name: str, last_name: str, place_index: int, place_name: str, description: str):
+    query_result = collection.find_one(
+        {"email": email, "first_name": first_name, "last_name": last_name},
+        {"places_mem": 1, "_id": 0}
+    )
+    if query_result:
+        places_mem= query_result.get("places_mem", [])
+        if place_index < len(places_mem):
+            places_mem[place_index] = {
+                "place_name": place_name,
+                "description": description
+            }
+            collection.update_one(
+                {"email": email, "first_name": first_name, "last_name": last_name},
+                {"$set": {"places_mem": places_mem}}
+            )
+            export_and_upload_to_vector_store()
+            return {"message": "Place data updated successfully"}
+    raise HTTPException(status_code=404, detail="Place not found")
 
 @app.post("/get_answer/")
 async def get_answer(question: str):
