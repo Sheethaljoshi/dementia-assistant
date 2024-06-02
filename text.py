@@ -267,7 +267,7 @@ async def update_person(email: str, first_name: str, last_name: str, mem_index: 
             )
             export_and_upload_to_vector_store()
             return {"message": "Place data updated successfully"}
-    raise HTTPException(status_code=404, detail="Memory not found")
+    raise HTTPException(status_code=404, detail="Place not found")
 
 @app.post("/get_answer/")
 async def get_answer(question: str):
