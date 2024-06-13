@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form
 from pymongo import MongoClient
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -6,6 +6,7 @@ import json
 from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo.server_api import ServerApi
+import base64
 
 load_dotenv()
 
@@ -13,18 +14,17 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[""],  # Set to ["*"] to allow requests from any origin
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
-cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",  server_api=ServerApi('1') )
+cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", server_api=ServerApi('1'))
 db = cluster["dementia"]
 collection = db["fileids"]
 
 def export_and_upload_to_vector_store():
-    
     def export_to_json():
         data = list(collection.find())
         for item in data:
@@ -32,7 +32,6 @@ def export_and_upload_to_vector_store():
         json_bytes = json.dumps(data).encode('utf-8')
         return BytesIO(json_bytes)
 
-    
     def create_file(file_contents):
         client = OpenAI()
         file3 = client.files.create(
@@ -41,7 +40,6 @@ def export_and_upload_to_vector_store():
         )
         return file3
 
-    
     def create_and_upload_vector_store_file(file_id):
         client = OpenAI()
         vector_store_files = client.beta.vector_stores.files.list(vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu')
@@ -50,17 +48,17 @@ def export_and_upload_to_vector_store():
                 vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
                 file_id=vector_store_file.id
             )
-            print("deleted",deleted.id)
+            print("deleted", deleted.id)
         vector_store_file = client.beta.vector_stores.files.create(
             vector_store_id='vs_l7uuSAnirZgPKhfnSriaOoTu',
             file_id=file_id
         )
-        
+
         vector_store_files = client.beta.vector_stores.files.list(
-        vector_store_id="vs_l7uuSAnirZgPKhfnSriaOoTu"
-)
+            vector_store_id="vs_l7uuSAnirZgPKhfnSriaOoTu"
+        )
         print(vector_store_files)
-        
+
         return vector_store_file
 
     json_file_contents = export_to_json()
@@ -68,34 +66,86 @@ def export_and_upload_to_vector_store():
     vector_store_file = create_and_upload_vector_store_file(created_file.id)
     return vector_store_file
 
-
 @app.post("/insert/place")
-async def insert_place(email: str, first_name: str, last_name: str, place_name: str, place_description: str):
-    new_place = {
-        "place_name": place_name,
-        "description": place_description,
+async def insert_place(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    place_name: str = Form(...),
+    place_description: str = Form(...),
+    image: UploadFile = File(...)
+):
+    image_content = await image.read()
+    image_b64 = base64.b64encode(image_content).decode('utf-8')
+    place_data = {
+        'place_name': place_name,
+        'place_description': place_description,
+        'image': image_b64
     }
-    collection.update_one(
-        {"email": email, "first_name": first_name, "last_name": last_name},
-        {"$push": {"places_mem": new_place}}
+
+    result = collection.update_one(
+        {'email': email, 'first_name': first_name, 'last_name': last_name},
+        {'$push': {'places_mem': place_data}}
     )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
     export_and_upload_to_vector_store()
-    return {"message": "Place data inserted successfully"}
+    return {"status": "Place data inserted successfully"}
+
+@app.post("/insert/person")
+async def insert_person(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    name: str = Form(...),
+    relation: str = Form(...),
+    occupation: str = Form(...),
+    description: str = Form(...)
+):
+    person_data = {
+        'name': name,
+        'relation': relation,
+        'occupation': occupation,
+        'description': description
+    }
+
+    result = collection.update_one(
+        {'email': email, 'first_name': first_name, 'last_name': last_name},
+        {'$push': {'persons_mem': person_data}}
+    )
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    export_and_upload_to_vector_store()
+    return {"status": "Person data inserted successfully"}
 
 @app.post("/insert/memory")
-async def insert_mem(email: str, first_name: str, last_name: str, date: str, mem_description: str):
-    new_memory = {
-        "date": date,
-        "description": mem_description
+async def insert_memory(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    date: str = Form(...),
+    mem_description: str = Form(...)
+):
+    memory_data = {
+        'date': date,
+        'mem_description': mem_description
     }
-    
-    collection.update_one(
-        {"email": email, "first_name": first_name, "last_name": last_name},
-        {"$push": {"mem_data": new_memory}}
+
+    result = collection.update_one(
+        {'email': email, 'first_name': first_name, 'last_name': last_name},
+        {'$push': {'memories_mem': memory_data}}
     )
-    
+
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
     export_and_upload_to_vector_store()
-    return {"message": "Place data inserted successfully"}
+    return {"status": "Memory data inserted successfully"}
+
 
 @app.post("/delete/person")
 async def delete_person(email: str, first_name: str, last_name: str, person_index: int):
@@ -187,20 +237,6 @@ async def get_place(email: str, first_name: str, last_name: str):
     else:
         return []
     
-@app.post("/insert/person")
-async def insert_person(email: str, first_name: str, last_name: str, name: str, relation: str, occupation: str, description: str):
-    new_person = {
-        "name": name,
-        "relation": relation,
-        "occupation": occupation,
-        "description": description
-    }
-    collection.update_one(
-        {"email": email, "first_name": first_name, "last_name": last_name},
-        {"$push": {"people_data": new_person}}
-    )
-    export_and_upload_to_vector_store()
-    return {"message": "Person data inserted successfully"}
 
 @app.post("/update/person")
 async def update_person(email: str, first_name: str, last_name: str, person_index: int, name: str, relation: str, occupation: str, description: str):

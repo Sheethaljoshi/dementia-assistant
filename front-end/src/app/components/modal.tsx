@@ -16,28 +16,43 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
   const [personDescription, setPersonDescription] = useState('');
   const [placeName, setPlaceName] = useState('');
   const [placeDescription, setPlaceDescription] = useState('');
+  const [placeImage, setPlaceImage] = useState<File | null>(null);
   const [thedate, setDate] = useState('');
   const [memoryDescription, setMemoryDescription] = useState('');
-  
 
-
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let url = '';
+    const formData = new FormData();
+    formData.append('email', 'sh33thal24@gmail.com');
+    formData.append('first_name', 'Sheethal');
+    formData.append('last_name', 'Joshi Thomas');
+
     if (activeTab === 1) {
-      url = `http://127.0.0.1:8000/insert/person?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&name=${personName}&relation=${therelation}&occupation=${theoccupation}&description=${personDescription}`;
-      axios.post(url)
+      url = `http://127.0.0.1:8000/insert/person`;
+      formData.append('name', personName);
+      formData.append('relation', therelation);
+      formData.append('occupation', theoccupation);
+      formData.append('description', personDescription);
     } else if (activeTab === 2) {
-      url = `http://127.0.0.1:8000/insert/place?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&place_name=${placeName}&place_description=${placeDescription}`;
-      axios.post(url)
-    } else if(activeTab===3){
-      url = `http://127.0.0.1:8000/insert/memory?email=sh33thal24@gmail.com&first_name=Sheethal&last_name=Joshi%20Thomas&date=${thedate}&mem_description=${memoryDescription}`;
-      axios.post(url)
+      url = `http://127.0.0.1:8000/insert/place`;
+      formData.append('place_name', placeName);
+      formData.append('place_description', placeDescription);
+      if (placeImage) {
+        formData.append('image', placeImage);
+      }
+    } else if(activeTab === 3){
+      url = `http://127.0.0.1:8000/insert/memory`;
+      formData.append('date', thedate);
+      formData.append('mem_description', memoryDescription);
     }
-    onClose()
+    await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    onClose();
     window.location.reload();
   }
-  
 
   const handleTabChange = (tabIndex: number) => {
     setActiveTab(tabIndex);
@@ -106,21 +121,23 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
               onChange={() => handleTabChange(2)}
             />
             <div role="tabpanel" className={`tab-content bg-base-100 border-base-300 rounded-box p-6 ${activeTab === 2 ? '' : 'hidden'}`}>
-            <div className="mb-4">
-              <label className="input input-bordered flex items-center gap-2">
-                Name of Place:
-                <input type="text" className="grow" placeholder="Misty's Florals" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
+              <div className="mb-4">
+                <label className="input input-bordered flex items-center gap-2">
+                  Name of Place:
+                  <input type="text" className="grow" placeholder="Misty's Florals" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
                 </label>
               </div>
               <div className="mb-4">
-              <label className=" flex flex-col  gap-2">
-                   <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" />
-                    </label>
+                <label className="flex flex-col gap-2">
+                  Upload Image:
+                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" onChange={(e) => setPlaceImage(e.target.files ? e.target.files[0] : null)} />
+                </label>
               </div>
               <div className="mb-4">
-              <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="Description" value={placeDescription} onChange={(e) => setPlaceDescription(e.target.value)}></textarea>
+                <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="Description" value={placeDescription} onChange={(e) => setPlaceDescription(e.target.value)}></textarea>
               </div>
             </div>
+
 
             <input
               type="radio"
