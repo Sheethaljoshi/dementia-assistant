@@ -16,7 +16,6 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
   const [personDescription, setPersonDescription] = useState('');
   const [placeName, setPlaceName] = useState('');
   const [placeDescription, setPlaceDescription] = useState('');
-  const [placeImage, setPlaceImage] = useState<File | null>(null);
   const [thedate, setDate] = useState('');
   const [memoryDescription, setMemoryDescription] = useState('');
 
@@ -37,21 +36,11 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
       url = `http://127.0.0.1:8000/insert/place`;
       formData.append('place_name', placeName);
       formData.append('place_description', placeDescription);
-      if (placeImage) {
-        formData.append('image', placeImage); // append the image directly to formData
-      }
     } else if (activeTab === 3) {
       url = `http://127.0.0.1:8000/insert/memory`;
       formData.append('date', thedate);
       formData.append('mem_description', memoryDescription);
     }
-
-    await axios.post(url, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
     onClose();
     window.location.reload();
   };
@@ -128,8 +117,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
               </div>
               <div className="mb-4">
                 <label className="flex flex-col gap-2">
-                  Upload Image:
-                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" onChange={(e) => setPlaceImage(e.target.files ? e.target.files[0] : null)} />
+                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" />
                 </label>
               </div>
               <div className="mb-4">

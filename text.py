@@ -84,23 +84,10 @@ async def insert_place(
     place_description: str = Form(...),
     file: UploadFile = File(None)
 ):
-    image_url = None
-
-    if file:
-        # Upload image to ImgBB
-        imgbb_url = f"https://api.imgbb.com/1/upload?key={IMGBB_API_KEY}"
-        response = requests.post(imgbb_url, files={"image": (file.filename, file.file, file.content_type)})
-        result = response.json()
-        
-        if response.status_code != 200:
-            raise HTTPException(status_code=response.status_code, detail=result)
-        
-        image_url = result['data']['url']
     
     place_data = {
         'place_name': place_name,
         'place_description': place_description,
-        'image_url': image_url
     }
 
     update_result = await collection.update_one(
