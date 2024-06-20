@@ -49,9 +49,9 @@ const Modal2: React.FC<ModalProps> = ({ isVisible, onClose, place_name, descript
   return (
     <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur flex justify-center items-center z-50 '>
       <div className='w-[1000px]'>
-        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto'>
+        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto max-h-[80vh]'>
           <div className='mb-7 mt-2 text-lg flex justify-between'>
-            <div className='flex'>
+            <div className='lg:flex'>
               <div className='mr-2'>
                 <div className="avatar flex-col mt-10">
                   <div className=" w-60 rounded-xl">

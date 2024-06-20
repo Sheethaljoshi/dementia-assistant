@@ -56,10 +56,10 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur flex justify-center items-center z-50 '>
-      <div className='w-[1000px]'>
-        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto'>
+      <div className='lg:w-[1000px] w-96 m-auto'>
+        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto max-h-[80vh]'>
           <div className='mb-7 mt-2 text-lg flex justify-between'>
-            <div className='flex'>
+            <div className='lg:flex'>
               <div className='mr-2'>
                 <div className="avatar flex-col mt-10">
                   <div className=" w-60 rounded-xl">
@@ -80,31 +80,31 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
               </div>
               <div className=' mt-10'>
                 <div className='flex mb-4 justify-between'>
-                  <div className='flex'>
+                  <div className='flex-col lg:flex'>
                     {isEditing ? (
-                        <input type="text" className="input input-bordered font-extrabold text-3xl w-56" placeholder="Daisy" value={newName} onChange={(e) => setNewName(e.target.value)} />
+                        <input type="text" className="input input-bordered font-extrabold text-3xl w-56 mb-3" placeholder="Daisy" value={newName} onChange={(e) => setNewName(e.target.value)} />
                     ) : (
                       <div className='font-extrabold text-3xl'>{name}</div>
                     )}
                     {isEditing ? (
                       <div className="input-xs">
-                        <input type="text" className="input w-32 input-bordered ml-3" placeholder="Friend" value={newRelation} onChange={(e) => setNewRelation(e.target.value)} />
+                        <input type="text" className="input w-32 input-bordered ml-3 " placeholder="Friend" value={newRelation} onChange={(e) => setNewRelation(e.target.value)} />
                       </div>
                     ) : 
                     (<div className=' mt-2 ml-3 mr-12  text-xl'>{relation}</div>)}
                   </div>
                   {isEditing ? (
                       <div className="input-xs">
-                        <input type="text" className="input input-bordered" placeholder="Friend" value={newOccupation} onChange={(e) => setNewOccupation(e.target.value)} />
+                        <input type="text" className="input input-bordered mb-3" placeholder="Friend" value={newOccupation} onChange={(e) => setNewOccupation(e.target.value)} />
                       </div>
                     ) : 
                     (<div className=' mt-4 text-sm'>{occupation}</div>)}
                   
                 </div>
-                <div className='card bg-base-100 shadow-xl'>
+                <div className='card bg-base-100 shadow-xl overflow-auto max-h-[80vh] mt-8'>
                   <div className='card-body'>
                     {isEditing ? (
-                      <textarea className="textarea textarea-bordered card-body w-full h-40 resize-none" placeholder="What memory would you like to share?" value={newDescription} onChange={(e) => setNewDescription(e.target.value)}></textarea>
+                      <textarea className="textarea textarea-bordered card-body h-40" placeholder="What memory would you like to share?" value={newDescription} onChange={(e) => setNewDescription(e.target.value)}></textarea>
                     ) : (
                       <div className='mt-2 ml-3'>{description}</div>
                     )}

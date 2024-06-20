@@ -38,21 +38,23 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
       formData.append('place_name', placeName);
       formData.append('place_description', placeDescription);
       if (placeImage) {
-        formData.append('image', placeImage);
+        formData.append('image', placeImage); // append the image directly to formData
       }
-    } else if(activeTab === 3){
+    } else if (activeTab === 3) {
       url = `http://127.0.0.1:8000/insert/memory`;
       formData.append('date', thedate);
       formData.append('mem_description', memoryDescription);
     }
+
     await axios.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
+
     onClose();
     window.location.reload();
-  }
+  };
 
   const handleTabChange = (tabIndex: number) => {
     setActiveTab(tabIndex);
@@ -68,7 +70,7 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
             <div className='mr-2'>
               <IconContext.Provider value={{ size: 23 }}>
                 <div>
-                  <RiHeartAdd2Line/>
+                  <RiHeartAdd2Line />
                 </div>
               </IconContext.Provider>
             </div>
@@ -86,28 +88,25 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
             />
             <div role="tabpanel" className={`tab-content bg-base-100 border-base-300 rounded-box p-6 ${activeTab === 1 ? '' : 'hidden'}`}>
               <div className="mb-4">
-              <label className="input input-bordered flex items-center gap-2">
-                Name:
-                <input type="text" className="grow" placeholder="Daisy" value={personName} onChange={(e) => setPersonName(e.target.value)} />
+                <label className="input input-bordered flex items-center gap-2">
+                  Name:
+                  <input type="text" className="grow" placeholder="Daisy" value={personName} onChange={(e) => setPersonName(e.target.value)} />
                 </label>
               </div>
               <div className="mb-4">
-              <label className="input input-bordered flex items-center gap-2">
-                    Relation:
-                    <input type="text" className="grow" placeholder="Friend" value={therelation} onChange={(e) => setRelation(e.target.value)} />
-                    </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  Relation:
+                  <input type="text" className="grow" placeholder="Friend" value={therelation} onChange={(e) => setRelation(e.target.value)} />
+                </label>
               </div>
               <div className="mb-4">
-              <label className="input input-bordered flex items-center gap-2">
-                    Occupation:
-                    <input type="text" className="grow" placeholder="Florist" value={theoccupation} onChange={(e) => setOccupation(e.target.value)} />
-                    </label>
+                <label className="input input-bordered flex items-center gap-2">
+                  Occupation:
+                  <input type="text" className="grow" placeholder="Florist" value={theoccupation} onChange={(e) => setOccupation(e.target.value)} />
+                </label>
               </div>
-              <label className=" mb-4">
-                   <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs mb-4" />
-                    </label>
               <div className="mb-4">
-              <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="What memory would you like to share?" value={personDescription} onChange={(e) => setPersonDescription(e.target.value)}></textarea>
+                <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="What memory would you like to share?" value={personDescription} onChange={(e) => setPersonDescription(e.target.value)}></textarea>
               </div>
             </div>
 
@@ -138,7 +137,6 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
               </div>
             </div>
 
-
             <input
               type="radio"
               name="my_tabs_2"
@@ -149,17 +147,14 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
               onChange={() => handleTabChange(3)}
             />
             <div role="tabpanel" className={`tab-content bg-base-100 border-base-300 rounded-box p-6 ${activeTab === 3 ? '' : 'hidden'}`}>
-            <div className="mb-4">
-              <label className="input input-bordered flex items-center gap-2">
-                Date:
-                <input type="text" className="grow" placeholder="DD-MM-YYYY" value={thedate} onChange={(e) => setDate(e.target.value)}/>
+              <div className="mb-4">
+                <label className="input input-bordered flex items-center gap-2">
+                  Date:
+                  <input type="text" className="grow" placeholder="DD-MM-YYYY" value={thedate} onChange={(e) => setDate(e.target.value)} />
                 </label>
               </div>
-              <label className=" flex flex-col  gap-2 mb-4">
-                   <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" />
-                    </label>
               <div className="mb-4">
-              <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="What memory would you like to share?"  value={memoryDescription} onChange={(e) => setMemoryDescription(e.target.value)}></textarea>
+                <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="What memory would you like to share?" value={memoryDescription} onChange={(e) => setMemoryDescription(e.target.value)}></textarea>
               </div>
             </div>
           </div>

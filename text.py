@@ -7,6 +7,11 @@ from io import BytesIO
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo.server_api import ServerApi
 import base64
+from fastapi.responses import JSONResponse
+import requests
+import motor.motor_asyncio
+from typing import Optional
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -23,6 +28,9 @@ app.add_middleware(
 cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", server_api=ServerApi('1'))
 db = cluster["dementia"]
 collection = db["fileids"]
+
+
+IMGBB_API_KEY = "d7f57ee62568cbeb357b766dfea5e8ea"
 
 def export_and_upload_to_vector_store():
     def export_to_json():
@@ -64,6 +72,7 @@ def export_and_upload_to_vector_store():
     json_file_contents = export_to_json()
     created_file = create_file(json_file_contents)
     vector_store_file = create_and_upload_vector_store_file(created_file.id)
+
     return vector_store_file
 
 @app.post("/insert/place")
@@ -73,25 +82,35 @@ async def insert_place(
     last_name: str = Form(...),
     place_name: str = Form(...),
     place_description: str = Form(...),
-    image: UploadFile = File(...)
+    file: UploadFile = File(None)
 ):
-    image_content = await image.read()
-    image_b64 = base64.b64encode(image_content).decode('utf-8')
+    image_url = None
+
+    if file:
+        # Upload image to ImgBB
+        imgbb_url = f"https://api.imgbb.com/1/upload?key={IMGBB_API_KEY}"
+        response = requests.post(imgbb_url, files={"image": (file.filename, file.file, file.content_type)})
+        result = response.json()
+        
+        if response.status_code != 200:
+            raise HTTPException(status_code=response.status_code, detail=result)
+        
+        image_url = result['data']['url']
+    
     place_data = {
         'place_name': place_name,
         'place_description': place_description,
-        'image': image_b64
+        'image_url': image_url
     }
 
-    result = collection.update_one(
+    update_result = await collection.update_one(
         {'email': email, 'first_name': first_name, 'last_name': last_name},
         {'$push': {'places_mem': place_data}}
     )
 
-    if result.matched_count == 0:
+    if update_result.modified_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
 
-    export_and_upload_to_vector_store()
     return {"status": "Place data inserted successfully"}
 
 @app.post("/insert/person")
