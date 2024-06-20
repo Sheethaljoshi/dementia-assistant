@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { RiHeartAdd2Line } from "react-icons/ri";
 import { IconContext } from "react-icons";
 import axios from 'axios';
@@ -18,6 +18,14 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
   const [placeDescription, setPlaceDescription] = useState('');
   const [thedate, setDate] = useState('');
   const [memoryDescription, setMemoryDescription] = useState('');
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImage(file); // Store the file object
+    }
+  };
 
   const handleSubmit = async () => {
     let url = '';
@@ -25,6 +33,10 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
     formData.append('email', 'sh33thal24@gmail.com');
     formData.append('first_name', 'Sheethal');
     formData.append('last_name', 'Joshi Thomas');
+
+    if (image) {
+      formData.append('image', image); // Add the image file to formData
+    }
 
     if (activeTab === 1) {
       url = `http://127.0.0.1:8000/insert/person`;
@@ -41,6 +53,12 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
       formData.append('date', thedate);
       formData.append('mem_description', memoryDescription);
     }
+
+    const response = await axios.post(url, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     onClose();
     window.location.reload();
   };
@@ -115,11 +133,13 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
                   <input type="text" className="grow" placeholder="Misty's Florals" value={placeName} onChange={(e) => setPlaceName(e.target.value)} />
                 </label>
               </div>
+              
               <div className="mb-4">
                 <label className="flex flex-col gap-2">
-                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" />
+                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" accept="image/*" onChange={handleImageUpload} />
                 </label>
               </div>
+
               <div className="mb-4">
                 <textarea className="textarea-md textarea textarea-bordered w-full" placeholder="Description" value={placeDescription} onChange={(e) => setPlaceDescription(e.target.value)}></textarea>
               </div>

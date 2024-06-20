@@ -6,9 +6,10 @@ interface CardProps {
   place_name: string;
   description: string;
   place_index: number;
+  image_url?: string;
 }
 
-const Card: React.FC<CardProps> = ({ place_name, description, place_index }) => {
+const Card: React.FC<CardProps> = ({ place_name, description, place_index, image_url }) => {
   const limitedDescription = description 
     ? description.substring(0, 35) + (description.length > 30 ? '...' : '') 
     : '';
@@ -21,7 +22,7 @@ const Card: React.FC<CardProps> = ({ place_name, description, place_index }) => 
         <input type="checkbox" className="peer" />
         <div className="collapse-title bg-primary text-primary-content peer-checked:bg-secondary peer-checked:text-secondary-content">
           <div className='text-2xl font-bold'>{place_name}</div>
-          <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" className='ml-3 rounded-xl w-50 mt-3 mb-3' />
+          {(image_url) ? <img src={image_url} className='ml-3 rounded-xl w-full object-cover mt-3 mb-3' />: <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" className='ml-3 rounded-xl w-50 mt-3 mb-3' />}
         </div>
         <div className="collapse-content bg-primary text-primary-content peer-checked:bg-secondary peer-checked:text-secondary-content">
           <p>{limitedDescription}</p>

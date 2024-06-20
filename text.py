@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form
 from pymongo import MongoClient
 from openai import OpenAI
@@ -9,7 +10,6 @@ from pymongo.server_api import ServerApi
 import base64
 from fastapi.responses import JSONResponse
 import requests
-import motor.motor_asyncio
 from typing import Optional
 from pydantic import BaseModel
 
@@ -28,9 +28,6 @@ app.add_middleware(
 cluster = MongoClient("mongodb+srv://sh33thal24:sh33thal24@cluster0.wfa7cip.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0", server_api=ServerApi('1'))
 db = cluster["dementia"]
 collection = db["fileids"]
-
-
-IMGBB_API_KEY = "d7f57ee62568cbeb357b766dfea5e8ea"
 
 def export_and_upload_to_vector_store():
     def export_to_json():
@@ -82,19 +79,32 @@ async def insert_place(
     last_name: str = Form(...),
     place_name: str = Form(...),
     place_description: str = Form(...),
-    file: UploadFile = File(None)
+    image: UploadFile = File(None)
 ):
+    image_bytes = await image.read()
+    image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+    url = "https://api.imgbb.com/1/upload"
+    payload = {
+        "key": os.environ.get("IMGBB_API_KEY"),
+        "image": image_base64
+    }
+    response = requests.post(url, payload)
+    result = json.loads(response.text)
+    print(result)
+    url = result["data"]["url"]
+    print(url)
     
     place_data = {
         'place_name': place_name,
+        'image_url': url,
         'place_description': place_description,
     }
 
-    update_result = await collection.update_one(
+    update_result = collection.update_one(
         {'email': email, 'first_name': first_name, 'last_name': last_name},
         {'$push': {'places_mem': place_data}}
     )
-
+    export_and_upload_to_vector_store()
     if update_result.modified_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -213,7 +223,6 @@ async def get_mem(email: str, first_name: str, last_name: str):
         {"email": email, "first_name": first_name, "last_name": last_name},
         {"mem_data": 1, "_id": 0}
     )
-    export_and_upload_to_vector_store()
     if query_result:
         return query_result.get("mem_data", [])
     else:
@@ -225,7 +234,6 @@ async def get_person(email: str, first_name: str, last_name: str):
         {"email": email, "first_name": first_name, "last_name": last_name},
         {"people_data": 1, "_id": 0}
     )
-    export_and_upload_to_vector_store()
     if query_result:
         return query_result.get("people_data", [])
     else:
@@ -237,7 +245,6 @@ async def get_place(email: str, first_name: str, last_name: str):
         {"email": email, "first_name": first_name, "last_name": last_name},
         {"places_mem": 1, "_id": 0}
     )
-    export_and_upload_to_vector_store()
     if query_result:
         return query_result.get("places_mem", [])
     else:
