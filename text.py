@@ -97,7 +97,7 @@ async def insert_place(
     place_data = {
         'place_name': place_name,
         'image_url': url,
-        'place_description': place_description,
+        'description': place_description,
     }
 
     update_result = collection.update_one(
