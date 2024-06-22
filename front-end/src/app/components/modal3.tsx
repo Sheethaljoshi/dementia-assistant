@@ -49,28 +49,10 @@ const Modal3: React.FC<ModalProps> = ({ isVisible, onClose, date, description, m
 
   return (
     <div className='fixed inset-0 bg-black bg-opacity-45 backdrop-blur flex justify-center items-center z-50 '>
-      <div className='w-[1000px]'>
-        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto'>
-          <div className='mb-7 mt-2 text-lg flex justify-between'>
+      <div className=''>
+        <div className='bg-base-200 p-7 rounded-3xl flex flex-col overflow-auto '>
+          <div className='mb-7 mt-2 text-lg flex'>
             <div className='flex'>
-              <div className='mr-2'>
-                <div className="avatar flex-col mt-10">
-                  <div className=" w-60 rounded-xl">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                  </div>
-                  {isEditing ? (
-                    <>
-                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleSubmit2}>Save Changes</button>
-                      <button className='btn w-64 bg-error mr-6 mt-4' onClick={handleCancelClick}>Cancel</button>
-                    </>
-                  ) : (
-                    <>
-                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleUpdateButtonClick}>Update Memory</button>
-                      <button className="btn w-64 bg-warning mr-6 mt-4" onClick={handleSubmit1}>Delete Memory</button>
-                    </>
-                  )}
-                </div>
-              </div>
               <div className=' mt-10'>
                 <div className='flex mb-4 justify-between'>
                   <div className='flex'>
@@ -90,9 +72,22 @@ const Modal3: React.FC<ModalProps> = ({ isVisible, onClose, date, description, m
                     )}
                   </div>
                 </div>
+                <div className=" flex-col mt-10">
+                  {isEditing ? (
+                    <>
+                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleSubmit2}>Save Changes</button>
+                      <button className='btn w-64 bg-error mr-6 mt-4' onClick={handleCancelClick}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleUpdateButtonClick}>Update Memory</button>
+                      <button className="btn w-64 bg-warning mr-6 mt-4" onClick={handleSubmit1}>Delete Memory</button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="card-actions justify-end">
+            <div className="card-actions">
               <button className="btn btn-square btn-sm" onClick={onClose}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>

@@ -7,9 +7,10 @@ interface ModalProps {
   place_name: string;
   description: string;
   place_index: number;
+  image_url?: string;
 }
 
-const Modal2: React.FC<ModalProps> = ({ isVisible, onClose, place_name, description, place_index }) => {
+const Modal2: React.FC<ModalProps> = ({ isVisible, onClose, place_name, description, place_index, image_url }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDescription, setNewDescription] = useState('');
@@ -55,7 +56,7 @@ const Modal2: React.FC<ModalProps> = ({ isVisible, onClose, place_name, descript
               <div className='mr-2'>
                 <div className="avatar flex-col mt-10">
                   <div className=" w-60 rounded-xl">
-                    <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                  {(image_url) ? <img src={image_url} className='object-cover w-full h-full' />: <img src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.jpg" className='object-cover w-full h-full' />}
                   </div>
                   {isEditing ? (
                     <>

@@ -30,7 +30,7 @@ const Card: React.FC<CardProps> = ({ place_name, description, place_index, image
             <button onClick={() => setShowModal2(true)} className="btn btn-primary">Know more</button>
           </div>
         </div>
-        <Modal2 isVisible={showModal2} onClose={() => setShowModal2(false)} place_name={place_name} description={description} place_index={place_index} />
+        <Modal2 isVisible={showModal2} onClose={() => setShowModal2(false)} place_name={place_name} description={description} place_index={place_index} image_url={image_url}/>
       </div>
     </Fragment>
   );

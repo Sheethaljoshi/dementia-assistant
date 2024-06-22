@@ -118,18 +118,35 @@ async def insert_person(
     name: str = Form(...),
     relation: str = Form(...),
     occupation: str = Form(...),
-    description: str = Form(...)
+    description: str = Form(...),
+    image: UploadFile = File(None)
 ):
+    image_url = None
+    if image:
+        image_bytes = await image.read()
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "key": os.environ.get("IMGBB_API_KEY"),
+            "image": image_base64
+        }
+        response = requests.post(url, payload)
+        result = json.loads(response.text)
+        print(result)
+        image_url = result["data"]["url"]
+        print(image_url)
+    
     person_data = {
         'name': name,
         'relation': relation,
         'occupation': occupation,
-        'description': description
+        'description': description,
+        'image_url': image_url,
     }
 
     result = collection.update_one(
         {'email': email, 'first_name': first_name, 'last_name': last_name},
-        {'$push': {'persons_mem': person_data}}
+        {'$push': {'people_data': person_data}}
     )
 
     if result.matched_count == 0:
@@ -252,7 +269,33 @@ async def get_place(email: str, first_name: str, last_name: str):
     
 
 @app.post("/update/person")
-async def update_person(email: str, first_name: str, last_name: str, person_index: int, name: str, relation: str, occupation: str, description: str):
+async def update_person(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    name: str = Form(...),
+    relation: str = Form(...),
+    occupation: str = Form(...),
+    description: str = Form(...),
+    person_index: str = Form(...),
+    newimage: UploadFile = File(None)
+):  
+    
+    image_url = None
+    if newimage:
+        image_bytes = await newimage.read()
+        image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "key": os.environ.get("IMGBB_API_KEY"),
+            "image": image_base64
+        }
+        response = requests.post(url, payload)
+        result = json.loads(response.text)
+        print(result)
+        image_url = result["data"]["url"]
+        print(image_url)
+        
     query_result = collection.find_one(
         {"email": email, "first_name": first_name, "last_name": last_name},
         {"people_data": 1, "_id": 0}
@@ -265,7 +308,8 @@ async def update_person(email: str, first_name: str, last_name: str, person_inde
                 "name": name,
                 "relation": relation,
                 "occupation": occupation,
-                "description": description
+                "description": description,
+                "image_url": image_url,
             }
             collection.update_one(
                 {"email": email, "first_name": first_name, "last_name": last_name},
@@ -277,7 +321,29 @@ async def update_person(email: str, first_name: str, last_name: str, person_inde
 
 
 @app.post("/update/place")
-async def update_person(email: str, first_name: str, last_name: str, place_index: int, place_name: str, description: str):
+async def update_person(
+    email: str = Form(...),
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    place_name: str = Form(...),
+    description: str = Form(...),
+    place_index: str = Form(...),
+    image: UploadFile = File(None)
+    
+):  
+    image_bytes = await image.read()
+    image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+    url = "https://api.imgbb.com/1/upload"
+    payload = {
+        "key": os.environ.get("IMGBB_API_KEY"),
+        "image": image_base64
+    }
+    response = requests.post(url, payload)
+    result = json.loads(response.text)
+    print(result)
+    url = result["data"]["url"]
+    print(url)
+    
     query_result = collection.find_one(
         {"email": email, "first_name": first_name, "last_name": last_name},
         {"places_mem": 1, "_id": 0}

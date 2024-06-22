@@ -107,6 +107,11 @@ const Modal: React.FC<ModalProps> = ({ isVisible, onClose }) => {
                 </label>
               </div>
               <div className="mb-4">
+                <label className="flex flex-col gap-2">
+                  <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" accept="image/*" onChange={handleImageUpload} />
+                </label>
+              </div>
+              <div className="mb-4">
                 <label className="input input-bordered flex items-center gap-2">
                   Occupation:
                   <input type="text" className="grow" placeholder="Florist" value={theoccupation} onChange={(e) => setOccupation(e.target.value)} />
