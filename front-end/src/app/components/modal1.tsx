@@ -95,7 +95,7 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
                   </div>
                   {isEditing ? (
                     <>
-                      <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs" accept="image/*" onChange={handleImageUpload} />
+                      <input type="file" className="file-input file-input-primary file-input-bordered w-full max-w-xs mt-3 mb-2" accept="image/*" onChange={handleImageUpload} />
                       <button className='btn w-64 bg-warning mr-6 mt-4' onClick={handleSubmit2}>Save Changes</button>
                       <button className='btn w-64 bg-error mr-6 mt-4' onClick={handleCancelClick}>Cancel</button>
                     </>
@@ -107,7 +107,7 @@ const Modal1: React.FC<ModalProps> = ({ isVisible, onClose, name, description, r
                   )}
                 </div>
               </div>
-              <div className=' mt-10'>
+              <div className='mt-10'>
                 <div className='flex mb-4 justify-between'>
                   <div className='flex-col lg:flex'>
                     {isEditing ? (
